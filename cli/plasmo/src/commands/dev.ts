@@ -19,7 +19,9 @@ async function dev() {
   process.env.NODE_ENV = "development"
 
   const rawServePort = getFlag("--serve-port") || "1012"
+  const serveHost = getFlag("--serve-host") || "localhost"
   const rawHmrPort = getFlag("--hmr-port") || "1815"
+  const hmrHost = getFlag("--hmr-host") || "localhost"
 
   iLog("Starting the extension development server...")
 
@@ -29,9 +31,11 @@ async function dev() {
     getPort({ port: parseInt(rawServePort) }),
     getPort({ port: parseInt(rawHmrPort) })
   ])
-  const buildWatcher = getBuildSocket(hmrPort)
 
-  vLog(`Starting dev server on ${servePort}, HMR on ${hmrPort}...`)
+  const buildWatcher = getBuildSocket(hmrHost, hmrPort)
+  vLog(
+    `Starting dev server on ${serveHost}:${servePort}, HMR on ${hmrHost}:${hmrPort}...`
+  )
 
   const bundleConfig = getBundleConfig()
 
@@ -43,11 +47,11 @@ async function dev() {
     logLevel: "verbose",
     shouldBundleIncrementally: true,
     serveOptions: {
-      host: "localhost",
+      host: serveHost,
       port: servePort
     },
     hmrOptions: {
-      host: "localhost",
+      host: hmrHost,
       port: hmrPort
     }
   })
